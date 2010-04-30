@@ -30,9 +30,9 @@ import _root_.org.apache.pig.data._
  * @author ueshin
  *
  */
-class CombinedLogLoader extends Utf8StorageConverter with LoadFunc with ApacheLogLoader {
+class CommonLogLoader extends Utf8StorageConverter with LoadFunc with ApacheLogLoader {
 
-  val COMBINED_PATTERN = "^([^ ]+) - ([^ ]+) \\[([^]]+)\\] \"([A-Z]+)\\s+(.+)\\s+([^ \"]+)\\s*\" ([0-9]+) ([0-9]+|-) \"([^\"]*)\" \"((?:\\\\\"|[^\"])*)\"$".r
+  val COMMON_PATTERN = "^([^ ]+) - ([^ ]+) \\[([^]]+)\\] \"([A-Z]+)\\s+(.+)\\s+([^ \"]+)\\s*\" ([0-9]+) ([0-9]+|-)$".r
 
   def getNext() : Tuple = {
     if(is == null || is.getPosition > end) {
@@ -41,7 +41,7 @@ class CombinedLogLoader extends Utf8StorageConverter with LoadFunc with ApacheLo
     else {
       is.readLine(UTF8, RECORD_DELIMITER) match {
         case null => null
-        case COMBINED_PATTERN(
+        case COMMON_PATTERN(
           RemoteHost(remoteHost),
           RemoteUser(remoteUser),
           RequestedTime(requestedTime),
@@ -49,11 +49,9 @@ class CombinedLogLoader extends Utf8StorageConverter with LoadFunc with ApacheLo
           RequestPath(requestPath),
           Protocol(protocol),
           StatusCode(statusCode),
-          ContentLength(contentLength),
-          Referer(referer),
-          UserAgent(userAgent)
+          ContentLength(contentLength)
         ) => {
-          val tuple = tupleFactory.newTuple(10)
+          val tuple = tupleFactory.newTuple(8)
           tuple.set(0, remoteHost)
           remoteUser map { u => tuple.set(1, u) }
           requestedTime map { t => tuple.set(2, t.getTime) }
@@ -62,8 +60,6 @@ class CombinedLogLoader extends Utf8StorageConverter with LoadFunc with ApacheLo
           tuple.set(5, protocol)
           tuple.set(6, statusCode)
           contentLength map { l => tuple.set(7, l) }
-          referer map { r => tuple.set(8, r) }
-          userAgent map { u => tuple.set(9, u) }
           tuple
         }
         case _ => getNext
@@ -81,8 +77,6 @@ class CombinedLogLoader extends Utf8StorageConverter with LoadFunc with ApacheLo
     schema.add(new Schema.FieldSchema("protocol",       DataType.CHARARRAY))
     schema.add(new Schema.FieldSchema("status_code",    DataType.INTEGER))
     schema.add(new Schema.FieldSchema("content_length", DataType.LONG))
-    schema.add(new Schema.FieldSchema("referer",        DataType.CHARARRAY))
-    schema.add(new Schema.FieldSchema("user_agent",     DataType.CHARARRAY))
     schema
   }
 
