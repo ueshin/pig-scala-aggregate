@@ -80,13 +80,13 @@ class CombinedLogLoader extends Utf8StorageConverter with LoadFunc {
     def unapply(statusCode: String) = Some(statusCode.toInt)
   }
   object ContentLength {
-    def apply(contentLength: Option[Int]) = contentLength match {
+    def apply(contentLength: Option[Long]) = contentLength match {
       case Some(contentLength) => contentLength.toString
       case None => "-"
     }
     def unapply(contentLength: String) = {
       try {
-        Some(Some(contentLength.toInt))
+        Some(Some(contentLength.toLong))
       }
       catch {
         case e: NumberFormatException => Some(None)
@@ -142,16 +142,16 @@ class CombinedLogLoader extends Utf8StorageConverter with LoadFunc {
           UserAgent(userAgent)
         ) => {
           val tuple = tupleFactory.newTuple(10)
-          tuple.set(0, new DataByteArray(remoteHost))
-          remoteUser map { u => tuple.set(1, new DataByteArray(u)) }
-          requestedTime map { t => tuple.set(2, new DataByteArray(t.getTime.toString)) }
-          tuple.set(3, new DataByteArray(method))
-          tuple.set(4, new DataByteArray(requestPath))
-          tuple.set(5, new DataByteArray(protocol))
-          tuple.set(6, new DataByteArray(statusCode.toString))
-          contentLength map { l => tuple.set(7, new DataByteArray(l.toString)) }
-          referer map { r => tuple.set(8, new DataByteArray(r)) }
-          userAgent map { u => tuple.set(9, new DataByteArray(u)) }
+          tuple.set(0, remoteHost)
+          remoteUser map { u => tuple.set(1, u) }
+          requestedTime map { t => tuple.set(2, t.getTime) }
+          tuple.set(3, method)
+          tuple.set(4, requestPath)
+          tuple.set(5, protocol)
+          tuple.set(6, statusCode)
+          contentLength map { l => tuple.set(7, l) }
+          referer map { r => tuple.set(8, r) }
+          userAgent map { u => tuple.set(9, u) }
           tuple
         }
         case _ => getNext
@@ -160,11 +160,22 @@ class CombinedLogLoader extends Utf8StorageConverter with LoadFunc {
   }
 
   def fieldsToRead(requiredFieldList: LoadFunc.RequiredFieldList) : LoadFunc.RequiredFieldResponse = {
-    null
+    new LoadFunc.RequiredFieldResponse(false);
   }
 
   def determineSchema(fileName: String, execType: ExecType, storage: DataStorage): Schema = {
-    null
+    val schema = new Schema
+    schema.add(new Schema.FieldSchema("remote_host",    DataType.CHARARRAY))
+    schema.add(new Schema.FieldSchema("remote_user",    DataType.CHARARRAY))
+    schema.add(new Schema.FieldSchema("requested_time", DataType.LONG))
+    schema.add(new Schema.FieldSchema("method",         DataType.CHARARRAY))
+    schema.add(new Schema.FieldSchema("request_path",   DataType.CHARARRAY))
+    schema.add(new Schema.FieldSchema("protocol",       DataType.CHARARRAY))
+    schema.add(new Schema.FieldSchema("status_code",    DataType.INTEGER))
+    schema.add(new Schema.FieldSchema("content_length", DataType.LONG))
+    schema.add(new Schema.FieldSchema("referer",        DataType.CHARARRAY))
+    schema.add(new Schema.FieldSchema("user_agent",     DataType.CHARARRAY))
+    schema
   }
 
 }
