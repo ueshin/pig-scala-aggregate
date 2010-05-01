@@ -34,44 +34,35 @@ class CombinedLogLoader extends Utf8StorageConverter with LoadFunc with ApacheLo
 
   val COMBINED_PATTERN = "^([^ ]+) - ([^ ]+) \\[([^]]+)\\] \"([A-Z]+)\\s+(.+)\\s+([^ \"]+)\\s*\" ([0-9]+) ([0-9]+|-) \"([^\"]*)\" \"((?:\\\\\"|[^\"])*)\"$".r
 
-  def getNext() : Tuple = {
-    if(is == null || is.getPosition > end) {
-      null
-    }
-    else {
-      is.readLine(UTF8, RECORD_DELIMITER) match {
-        case null => null
-        case COMBINED_PATTERN(
-          RemoteHost(remoteHost),
-          RemoteUser(remoteUser),
-          RequestedTime(requestedTime),
-          Method(method),
-          RequestPath(requestPath),
-          Protocol(protocol),
-          StatusCode(statusCode),
-          ContentLength(contentLength),
-          Referer(referer),
-          UserAgent(userAgent)
-        ) => {
-          val tuple = tupleFactory.newTuple(10)
-          tuple.set(0, remoteHost)
-          remoteUser map { u => tuple.set(1, u) }
-          requestedTime map { t => tuple.set(2, t.getTime) }
-          tuple.set(3, method)
-          tuple.set(4, requestPath)
-          tuple.set(5, protocol)
-          tuple.set(6, statusCode)
-          contentLength map { l => tuple.set(7, l) }
-          referer map { r => tuple.set(8, r) }
-          userAgent map { u => tuple.set(9, u) }
-          tuple
-        }
-        case _ => getNext
-      }
+  def parseLog = {
+    case COMBINED_PATTERN(
+      RemoteHost(remoteHost),
+      RemoteUser(remoteUser),
+      RequestedTime(requestedTime),
+      Method(method),
+      RequestPath(requestPath),
+      Protocol(protocol),
+      StatusCode(statusCode),
+      ContentLength(contentLength),
+      Referer(referer),
+      UserAgent(userAgent)
+    ) => {
+      val tuple = tupleFactory.newTuple(10)
+      tuple.set(0, remoteHost)
+      remoteUser map { u => tuple.set(1, u) }
+      requestedTime map { t => tuple.set(2, t.getTime) }
+      tuple.set(3, method)
+      tuple.set(4, requestPath)
+      tuple.set(5, protocol)
+      tuple.set(6, statusCode)
+      contentLength map { l => tuple.set(7, l) }
+      referer map { r => tuple.set(8, r) }
+      userAgent map { u => tuple.set(9, u) }
+      tuple
     }
   }
 
-  def determineSchema(fileName: String, execType: ExecType, storage: DataStorage): Schema = {
+  override def determineSchema(fileName: String, execType: ExecType, storage: DataStorage): Schema = {
     val schema = new Schema
     schema.add(new Schema.FieldSchema("remote_host",    DataType.CHARARRAY))
     schema.add(new Schema.FieldSchema("remote_user",    DataType.CHARARRAY))

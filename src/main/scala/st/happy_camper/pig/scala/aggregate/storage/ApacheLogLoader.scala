@@ -41,7 +41,7 @@ trait ApacheLogLoader {
         case e: ParseException => Some(None)
       }
     }
-    def dateFormat = new SimpleDateFormat("dd/MMM/yyyy:HH:mm:ss Z", Locale.US)
+    private def dateFormat = new SimpleDateFormat("dd/MMM/yyyy:HH:mm:ss Z", Locale.US)
   }
   object Method {
     def apply(method: String) = method
@@ -102,8 +102,29 @@ trait ApacheLogLoader {
     }
   }
 
+  def getNext() : Tuple = {
+    if(is == null || is.getPosition > end) {
+      null
+    }
+    else {
+      (
+        parseLog orElse { line: String =>
+          line match {
+            case null => null
+            case _ => getNext
+          }
+        }
+      ) (is.readLine(UTF8, RECORD_DELIMITER))
+    }
+  }
+
   def fieldsToRead(requiredFieldList: LoadFunc.RequiredFieldList) : LoadFunc.RequiredFieldResponse = {
     new LoadFunc.RequiredFieldResponse(false);
   }
 
+  def determineSchema(fileName: String, execType: ExecType, storage: DataStorage): Schema = {
+    null
+  }
+
+  def parseLog: PartialFunction[String, Tuple]
 }

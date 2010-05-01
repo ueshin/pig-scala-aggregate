@@ -34,40 +34,31 @@ class CommonLogLoader extends Utf8StorageConverter with LoadFunc with ApacheLogL
 
   val COMMON_PATTERN = "^([^ ]+) - ([^ ]+) \\[([^]]+)\\] \"([A-Z]+)\\s+(.+)\\s+([^ \"]+)\\s*\" ([0-9]+) ([0-9]+|-)$".r
 
-  def getNext() : Tuple = {
-    if(is == null || is.getPosition > end) {
-      null
-    }
-    else {
-      is.readLine(UTF8, RECORD_DELIMITER) match {
-        case null => null
-        case COMMON_PATTERN(
-          RemoteHost(remoteHost),
-          RemoteUser(remoteUser),
-          RequestedTime(requestedTime),
-          Method(method),
-          RequestPath(requestPath),
-          Protocol(protocol),
-          StatusCode(statusCode),
-          ContentLength(contentLength)
-        ) => {
-          val tuple = tupleFactory.newTuple(8)
-          tuple.set(0, remoteHost)
-          remoteUser map { u => tuple.set(1, u) }
-          requestedTime map { t => tuple.set(2, t.getTime) }
-          tuple.set(3, method)
-          tuple.set(4, requestPath)
-          tuple.set(5, protocol)
-          tuple.set(6, statusCode)
-          contentLength map { l => tuple.set(7, l) }
-          tuple
-        }
-        case _ => getNext
-      }
+  def parseLog = {
+    case COMMON_PATTERN(
+      RemoteHost(remoteHost),
+      RemoteUser(remoteUser),
+      RequestedTime(requestedTime),
+      Method(method),
+      RequestPath(requestPath),
+      Protocol(protocol),
+      StatusCode(statusCode),
+      ContentLength(contentLength)
+    ) => {
+      val tuple = tupleFactory.newTuple(8)
+      tuple.set(0, remoteHost)
+      remoteUser map { u => tuple.set(1, u) }
+      requestedTime map { t => tuple.set(2, t.getTime) }
+      tuple.set(3, method)
+      tuple.set(4, requestPath)
+      tuple.set(5, protocol)
+      tuple.set(6, statusCode)
+      contentLength map { l => tuple.set(7, l) }
+      tuple
     }
   }
 
-  def determineSchema(fileName: String, execType: ExecType, storage: DataStorage): Schema = {
+  override def determineSchema(fileName: String, execType: ExecType, storage: DataStorage): Schema = {
     val schema = new Schema
     schema.add(new Schema.FieldSchema("remote_host",    DataType.CHARARRAY))
     schema.add(new Schema.FieldSchema("remote_user",    DataType.CHARARRAY))
