@@ -28,7 +28,6 @@ import _root_.org.apache.pig.data._
 
 /**
  * @author ueshin
- *
  */
 class CommonLogLoader extends Utf8StorageConverter with LoadFunc with ApacheLogLoader {
 
