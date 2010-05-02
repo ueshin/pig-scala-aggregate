@@ -47,7 +47,7 @@ class CommonLogLoader extends Utf8StorageConverter with LoadFunc with ApacheLogL
       val tuple = tupleFactory.newTuple(8)
       tuple.set(0, remoteHost)
       remoteUser map { u => tuple.set(1, u) }
-      requestedTime map { t => tuple.set(2, t.getTime) }
+      tuple.set(2, requestedTime.getTime)
       tuple.set(3, method)
       tuple.set(4, requestPath)
       tuple.set(5, protocol)

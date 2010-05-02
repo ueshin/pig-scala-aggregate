@@ -53,10 +53,10 @@ trait ApacheLogLoader {
     }
     def unapply(requestedTime: String) = {
       try {
-        Some(Some(dateFormat.parse(requestedTime)))
+        Some(dateFormat.parse(requestedTime))
       }
       catch {
-        case e: ParseException => Some(None)
+        case e: ParseException => None
       }
     }
     private def dateFormat = new SimpleDateFormat("dd/MMM/yyyy:HH:mm:ss Z", Locale.US)
