@@ -20,6 +20,7 @@ import _root_.java.text._
 
 import _root_.org.apache.pig._
 import _root_.org.apache.pig.data._
+import _root_.org.apache.pig.impl.logicalLayer.schema.Schema
 
 /**
  * @author ueshin
@@ -37,4 +38,14 @@ class LongToDateFormat extends EvalFunc[String] {
     }
   }
 
+  override def getArgToFuncMapping() = {
+    val schema = new Schema(
+      Arrays.asList(
+        new Schema.FieldSchema(null, DataType.LONG) ::
+        new Schema.FieldSchema(null, DataType.CHARARRAY) ::
+        Nil: _*
+      )
+    )
+    Arrays.asList(new FuncSpec(this.getClass.getName, schema) :: Nil: _*)
+  }
 }
