@@ -1,11 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>st.happy_camper.pig</groupId>
 	<artifactId>pig-scala-aggregate</artifactId>
 	<packaging>jar</packaging>
-	<name>pig-scala--aggregate</name>
-	<version>0.6.1-SNAPSHOT</version>
+	<name>pig-scala-aggregate</name>
+	<version>0.6.1</version>
 	<inceptionYear>2010</inceptionYear>
 	<licenses>
 		<license>
@@ -29,9 +28,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://happy-camper.st/svn/hadoop/trunk/pig-scala--aggregate</connection>
-		<developerConnection>scm:svn:https://happy-camper.st/svn/hadoop/trunk/pig-scala--aggregate</developerConnection>
-		<url>http://hadoop.happy-camper.st/browser/trunk/pig-scala--aggregate</url>
+		<connection>scm:svn:https://happy-camper.st/svn/hadoop/tags/pig-scala-aggregate-0.6.1</connection>
+		<developerConnection>scm:svn:https://happy-camper.st/svn/hadoop/tags/pig-scala-aggregate-0.6.1</developerConnection>
+		<url>http://hadoop.happy-camper.st/browser/tags/pig-scala-aggregate-0.6.1</url>
 	</scm>
 	<issueManagement>
 		<system>trac</system>
@@ -115,11 +114,13 @@
 			<artifactId>pig-core</artifactId>
 			<version>0.6.0</version>
 		</dependency>
+<!--
 		<dependency>
 			<groupId>org.apache.pig</groupId>
 			<artifactId>piggybank</artifactId>
 			<version>0.6.0</version>
 		</dependency>
+-->
 
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
