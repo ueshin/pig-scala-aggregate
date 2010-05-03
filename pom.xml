@@ -4,7 +4,7 @@
 	<groupId>st.happy_camper.pig</groupId>
 	<artifactId>pig-scala-aggregate</artifactId>
 	<packaging>jar</packaging>
-	<name>pig-scala--aggregate</name>
+	<name>pig-scala-aggregate</name>
 	<version>0.6.1-SNAPSHOT</version>
 	<inceptionYear>2010</inceptionYear>
 	<licenses>
@@ -29,9 +29,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://happy-camper.st/svn/hadoop/trunk/pig-scala--aggregate</connection>
-		<developerConnection>scm:svn:https://happy-camper.st/svn/hadoop/trunk/pig-scala--aggregate</developerConnection>
-		<url>http://hadoop.happy-camper.st/browser/trunk/pig-scala--aggregate</url>
+		<connection>scm:svn:https://happy-camper.st/svn/hadoop/trunk/pig-scala-aggregate</connection>
+		<developerConnection>scm:svn:https://happy-camper.st/svn/hadoop/trunk/pig-scala-aggregate</developerConnection>
+		<url>http://hadoop.happy-camper.st/browser/trunk/pig-scala-aggregate</url>
 	</scm>
 	<issueManagement>
 		<system>trac</system>
