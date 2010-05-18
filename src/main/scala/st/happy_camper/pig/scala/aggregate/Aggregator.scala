@@ -22,10 +22,11 @@ import _root_.org.apache.pig._
 
 object Aggregator {
   def main(args : Array[String]) {
-    val input = args(0)
-    val output = args(1)
+    val execType = args(0)
+    val input = args(1)
+    val output = args(2)
 
-    val pigServer = new PigServer(ExecType.LOCAL)
+    val pigServer = new PigServer(execType)
     pigServer.registerQuery("request = " +
     		"LOAD '" + input + "' USING " + classOf[CombinedLogLoader].getName + ";")
     pigServer.registerQuery("html_request = " +
